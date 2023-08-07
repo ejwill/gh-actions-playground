@@ -34,6 +34,6 @@ jobs:
         id: bumpr
         with:
           default_bump_level: patch
-          dry-run: true
+          dry_run: true
       - run: echo 'current version = ${{ steps.bumpr.outputs.current_version }}'
       - run: echo 'next version = ${{ steps.bumpr.outputs.next_version }}'
