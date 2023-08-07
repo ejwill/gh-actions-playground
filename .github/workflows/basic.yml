@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,13 +24,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - uses: dotnet/nbgv@v0.4.1
+        id: nbgv
+      - run: echo 'SemVer2=${{ steps.nbgv.outputs.SemVer2 }}'
+      - uses: haya14busa/action-bumpr@v1
+        id: bumpr
+        with:
+          default_bump_level: patch
+          dry_run: true
+      - run: echo 'current version = ${{ steps.bumpr.outputs.current_version }}'
+      - run: echo 'next version = ${{ steps.bumpr.outputs.next_version }}'
